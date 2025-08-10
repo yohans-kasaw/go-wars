@@ -6,29 +6,43 @@ import (
 )
 
 func NextBigger(n int) int {
-	arr := int_to_arr(n)
-
-	first_dec := -1
-	for i := 1; i < len(arr); i++ {
-		if arr[i] < arr[i-1] {
-			first_dec = i
+	digits := int_to_arr(n)
+	
+	// Find the rightmost digit that is smaller than the digit next to it
+	pivot := -1
+	for i := len(digits) - 2; i >= 0; i-- {
+		if digits[i] < digits[i+1] {
+			pivot = i
 			break
 		}
 	}
-
-	if first_dec == -1 {
+	
+	// If no such digit is found, the number is the largest permutation
+	if pivot == -1 {
 		return -1
 	}
-
-	for j := 0; j < first_dec; j++ {
-		if arr[j] > arr[first_dec] {
-			arr[first_dec], arr[j] = arr[j], arr[first_dec]
-			sort.Sort(sort.Reverse(sort.IntSlice(arr[:first_dec])))
-			res := arr_to_rev_int(&arr)
-			return res
+	
+	// Find the smallest digit on right side of pivot that is greater than pivot
+	successor := -1
+	for i := len(digits) - 1; i > pivot; i-- {
+		if digits[i] > digits[pivot] {
+			successor = i
+			break
 		}
 	}
-	return -1
+	
+	// Swap the pivot and successor
+	digits[pivot], digits[successor] = digits[successor], digits[pivot]
+	
+	// Reverse the suffix starting at pivot+1
+	left, right := pivot+1, len(digits)-1
+	for left < right {
+		digits[left], digits[right] = digits[right], digits[left]
+		left++
+		right--
+	}
+	
+	return arr_to_int(digits)
 }
 
 func int_to_arr(n int) []int {
@@ -39,11 +53,10 @@ func int_to_arr(n int) []int {
 	return arr
 }
 
-func arr_to_rev_int(arr *[]int) int {
+func arr_to_int(arr []int) int {
 	n := 0
-	for i := len(*arr) - 1; i >= 0; i-- {
-		n *= 10
-		n += (*arr)[i]
+	for _, digit := range arr {
+		n = n*10 + digit
 	}
 	return n
 }
