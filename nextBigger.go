@@ -55,21 +55,3 @@ func arr_to_int(arr []int) int {
 	}
 	return n
 }
-
-func TestFunc() {
-	example_tests := [...][]int{
-		{8, -1},
-		{12, 21},
-		{513, 531},
-		{2017, 2071},
-		{414, 441},
-		{144, 414},
-		{1234567890, -1},
-		{9876543210, -1},
-		{59884848459853, -1},
-	}
-	for _, v := range example_tests {
-		input := v[0]
-		Expect(NextBigger(input))
-	}
-}
