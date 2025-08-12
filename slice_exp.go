@@ -12,7 +12,3 @@ func mainMat() {
 func modify(s [][]int) {
 	s[0][0] = 1000
 }
-
-func TestFunc() {
-	mainMat()
-}

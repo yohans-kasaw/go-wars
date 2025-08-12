@@ -8,9 +8,8 @@ import (
 // 	fmt.Println(ChooseBestSum(t, k, ls), expected, t)
 // }
 
-
-func Expect(res int) {
-	fmt.Println(res)
+func Expect[T comparable](res T, expected T) {
+	fmt.Println(res == expected, res, "expected -> ", expected)
 }
 
 func main() {
