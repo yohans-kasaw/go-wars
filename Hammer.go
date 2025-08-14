@@ -1,48 +1,43 @@
 package main
 
 import (
+	"container/heap"
 	"math"
-	"sort"
 )
 
+type UIntHeap []uint
+
+func (h UIntHeap) Len() int           { return len(h) }
+func (h UIntHeap) Less(i, j int) bool { return h[i] < h[j] }
+func (h UIntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *UIntHeap) Push(x any)        { *h = append(*h, x.(uint)) }
+func (h *UIntHeap) Pop() any {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
 func Hammer(n int) uint {
-
-	arr := make([]uint, 0)
 	var limit uint = math.MaxUint
-	size := 64
+	h := UIntHeap{1}
+	heap.Init(&h)
 
-	for i := 0; i < size; i++ {
-		a := PowerOf(2, i)
-		for j := 0; j < size; j++ {
-			b := PowerOf(3, j)
-			if b > 0 && a >= limit/b {
-				break
-			}
+	for i := 0; i < n - 1; i++{
+		m := heap.Pop(&h).(uint)
+		for len(h) > 0 && m == (h)[0]{
+			heap.Pop(&h)
+		}
 
-			ab := a * b
-			for k := 0; k < size; k++ {
-				c := PowerOf(5, k)
-				if c > 0 && ab >= limit/c {
-					break
-				}
-				arr = append(arr, ab*c)
+		for _,v := range []uint{2,3,5}{
+			if m <= limit / v{
+				heap.Push(&h, m*v)
 			}
 		}
 	}
 
-	sort.Slice(arr, func(i, j int) bool {
-		return arr[i] < arr[j]
-	})
-
-	return arr[n-1]
-}
-
-func PowerOf(m uint, n int) uint {
-	var result uint = 1
-	for i := 0; i < n; i++ {
-		result *= m
-	}
-	return result
+	return heap.Pop(&h).(uint)
 }
 
 func dotest(n int, exp uint) {
